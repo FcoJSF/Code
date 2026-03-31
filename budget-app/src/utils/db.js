@@ -10,7 +10,8 @@ db.version(1).stores({
 export async function saveAccount(accountData) {
   const { accountId, accountLabel, type, transactions } = accountData
   await db.accounts.put({ accountId, accountLabel, type })
-  await db.transactions.where('accountId').equals(accountId).delete()
+  // bulkPut upserts — existing transactions are updated, new ones are added
+  // This allows uploading multiple months for the same account without losing data
   await db.transactions.bulkPut(transactions)
 }
 
