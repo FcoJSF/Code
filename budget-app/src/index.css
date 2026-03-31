@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background-color: #0f172a;
+    color: #f1f5f9;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #0f172a;
+    min-height: 100dvh;
+    overscroll-behavior: none;
+  }
+  #root {
+    min-height: 100dvh;
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
