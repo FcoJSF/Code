@@ -81,8 +81,11 @@ function parseCreditCard(lines, headerIndex, fileName) {
 
 function parseChecking(lines, headerIndex, fileName) {
   const metaLines = lines.slice(0, headerIndex)
-  const cardName = extractMetaLine(metaLines, 'Producto:') || extractMetaLine(metaLines, 'CUENTA:') || fileName.replace('.csv', '')
-  const lastFour = (extractMetaLine(metaLines, 'No. de Tarjeta:') || extractMetaLine(metaLines, 'No. de Cuenta:') || '').replace(/\*/g, '').slice(-4)
+  const cardName = extractMetaLine(metaLines, 'Producto:') || extractMetaLine(metaLines, 'CUENTA:') || 'Checking Account'
+  // Last 4 digits from "**9214" pattern or explicit card number line
+  const accountNumLine = extractMetaLine(metaLines, 'No. de Tarjeta:') || extractMetaLine(metaLines, 'No. de Cuenta:') || metaLines.find(l => /\*\*\d{4}/.test(l)) || ''
+  const lastFourMatch = accountNumLine.match(/\*+(\d{4})/)
+  const lastFour = lastFourMatch ? lastFourMatch[1] : ''
 
   const accountId = `chk_${cardName.replace(/\s+/g, '_').toUpperCase()}`
   const accountLabel = `${cardName}${lastFour ? ` (****${lastFour})` : ''}`
@@ -113,14 +116,14 @@ function parseChecking(lines, headerIndex, fileName) {
       })
     }
 
-    if (withdrawalAmt !== null && withdrawalAmt > 0) {
+    if (withdrawalAmt !== null && withdrawalAmt !== 0) {
       const { category, color } = categorize(concepto)
       transactions.push({
         id: `${accountId}_ret_${i}`,
         date: date.toISOString(),
         dateLabel: fecha.trim(),
         concepto: concepto.trim(),
-        amount: withdrawalAmt,
+        amount: Math.abs(withdrawalAmt),
         type: 'expense',
         category,
         color,
