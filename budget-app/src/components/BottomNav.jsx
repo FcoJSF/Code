@@ -1,8 +1,9 @@
-import { LayoutDashboard, List, Upload, PieChart } from 'lucide-react'
+import { LayoutDashboard, List, Upload, PieChart, Target } from 'lucide-react'
 
 const tabs = [
   { id: 'dashboard', label: 'Dashboard', Icon: LayoutDashboard },
   { id: 'analytics', label: 'Analytics', Icon: PieChart },
+  { id: 'plan', label: 'Plan', Icon: Target },
   { id: 'transactions', label: 'Transactions', Icon: List },
   { id: 'upload', label: 'Upload', Icon: Upload },
 ]

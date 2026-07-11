@@ -7,6 +7,15 @@ db.version(1).stores({
   transactions: 'id, accountId, date, type, category, amount',
 })
 
+db.version(2).stores({
+  accounts: 'accountId, accountLabel, type',
+  transactions: 'id, accountId, date, type, category, amount',
+  budgets: 'category',
+  debts: '++id, name',
+  goals: '++id, name',
+  settings: 'key',
+})
+
 export async function saveAccount(accountData) {
   const { accountId, accountLabel, type, transactions } = accountData
   await db.accounts.put({ accountId, accountLabel, type })
@@ -49,4 +58,59 @@ export async function getAvailableMonths() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
   }))
   return [...set].sort().reverse()
+}
+
+// ---- Budget (per-category monthly limits) ----
+
+export async function getBudgets() {
+  return db.budgets.toArray()
+}
+
+export async function setBudget(category, limit) {
+  if (limit > 0) {
+    await db.budgets.put({ category, limit })
+  } else {
+    await db.budgets.delete(category)
+  }
+}
+
+// ---- Settings (monthly income, etc.) ----
+
+export async function getSetting(key, fallback = null) {
+  const row = await db.settings.get(key)
+  return row ? row.value : fallback
+}
+
+export async function setSetting(key, value) {
+  await db.settings.put({ key, value })
+}
+
+// ---- Debts ----
+
+export async function getDebts() {
+  return db.debts.toArray()
+}
+
+export async function saveDebt(debt) {
+  if (debt.id != null) return db.debts.put(debt)
+  return db.debts.add(debt)
+}
+
+export async function deleteDebt(id) {
+  await db.debts.delete(id)
+}
+
+// ---- Savings goals ----
+
+export async function getGoals() {
+  return db.goals.toArray()
+}
+
+export async function saveGoal(goal) {
+  if (goal.id != null) return db.goals.put(goal)
+  return db.goals.add(goal)
+}
+
+export async function deleteGoal(id) {
+  await db.goals.delete(id)
 }

@@ -3,6 +3,7 @@ import BottomNav from './components/BottomNav.jsx'
 import DashboardPage from './components/DashboardPage.jsx'
 import AnalyticsPage from './components/AnalyticsPage.jsx'
 import TransactionsPage from './components/TransactionsPage.jsx'
+import PlanPage from './components/PlanPage.jsx'
 import UploadPage from './components/UploadPage.jsx'
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         {tab === 'dashboard'     && <DashboardPage key={refreshKey} />}
         {tab === 'analytics'     && <AnalyticsPage key={refreshKey} />}
         {tab === 'transactions'  && <TransactionsPage key={refreshKey} />}
+        {tab === 'plan'          && <PlanPage key={refreshKey} />}
         {tab === 'upload'        && <UploadPage onUploaded={onUploaded} />}
       </main>
       <BottomNav active={tab} onSelect={setTab} />
